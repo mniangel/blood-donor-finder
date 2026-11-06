@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blood Donor Finder — Find compatible donors fast</title>
+<meta name="description" content="Finding the right donor, near the hospital, in minutes.">
+<style>
+:root{--bg:#f5ecdc;--card:#fffaf0;--ink:#2a1a1c;--mut:#76665f;--line:#e2d2b9;--red:#7a1c33;--red2:#5c1226;--btn:#7a1c33;--btn2:#5c1226;--rs:#f0dcd9;--gn:#1f7a4d;--gs:#dcebdc;--am:#8a5a0b;--as:#f4e3b8;--bl:#2a55a8;--bs:#dfe6f2;--gy:#9b8f80;--gys:#ebe1cf;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1214;--card:#291b1e;--ink:#f4e9dc;--mut:#b9a597;--line:#433034;--red:#e08a9d;--red2:#c9677c;--btn:#a63852;--btn2:#8e2c44;--rs:#46232b;--gn:#4cc58c;--gs:#183a29;--am:#e8b04e;--as:#3d3015;--bl:#7ea6f2;--bs:#1d2d4c;--gy:#8a7e7a;--gys:#33282a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1214;--card:#291b1e;--ink:#f4e9dc;--mut:#b9a597;--line:#433034;--red:#e08a9d;--red2:#c9677c;--btn:#a63852;--btn2:#8e2c44;--rs:#46232b;--gn:#4cc58c;--gs:#183a29;--am:#e8b04e;--as:#3d3015;--bl:#7ea6f2;--bs:#1d2d4c;--gy:#8a7e7a;--gys:#33282a;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:30}
+a{color:inherit;text-decoration:none}
+h1,h2,.br{font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 16px}
+.br{font-weight:800;display:flex;align-items:center;gap:8px;font-size:17px}
+.lg{width:30px;height:30px;border-radius:9px;background:var(--btn);display:grid;place-items:center;font-size:16px}
+.tn{display:none;gap:4px;margin-left:10px}.tn a{padding:6px 12px;border-radius:999px;color:var(--mut);font-weight:600}.tn a.on{background:var(--rs);color:var(--red)}
+.demo{margin-left:auto;font-size:12px;font-weight:700;color:var(--am);background:var(--as);padding:4px 10px;border-radius:999px;white-space:nowrap}
+#bn{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+#bn:empty{display:none}#bn a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 0;font-size:11px;font-weight:600;color:var(--mut)}#bn a span{font-size:19px}#bn a.on{color:var(--red)}
+@media(min-width:760px){.tn{display:flex}#bn{display:none}}
+main{max-width:760px;margin:0 auto;padding:22px 16px 100px}main.wide{max-width:1040px}
+h1{font-size:28px;line-height:1.2;margin:4px 0 6px;letter-spacing:-.02em}h2{font-size:17px;margin:0 0 10px}
+.k{font-size:13px;font-weight:700;color:var(--red)}.sub{color:var(--mut);margin:0 0 18px}.mu{color:var(--mut);font-size:13px}.rd{color:var(--red)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+label.f{display:block;font-weight:600;font-size:13px;margin:16px 0 6px}label.f:first-child{margin-top:0}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=password],select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--red);outline-offset:1px}
+.btn{display:inline-block;text-align:center;border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--btn);color:#fff}
+.btn:hover{background:var(--btn2)}.btn.o{background:transparent;color:var(--red);border:1px solid var(--red)}.btn.s{padding:7px 12px;font-size:13px}.btn.w{width:100%;margin-top:20px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ch{padding:10px 0;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);cursor:pointer;font:inherit;font-weight:700}
+.ch.on{background:var(--btn);border-color:var(--btn);color:#fff}
+.seg{display:flex;gap:6px;flex-wrap:wrap}.seg .ch{flex:1;padding:9px 6px;font-size:13px;min-width:90px}
+.st{display:flex;align-items:center;gap:14px}.st button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:22px;cursor:pointer}.st b{min-width:30px;text-align:center;font-size:20px}
+.sos,.sw{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:16px;background:var(--bg)}
+.sw{margin-top:10px}.gr{flex:1;min-width:0}
+.tg{position:relative;width:46px;height:26px;flex:none}.tg input{opacity:0;position:absolute;inset:0;margin:0;cursor:pointer;z-index:1}.tg span{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:.2s}.tg span::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.tg input:checked+span{background:var(--btn)}.tg input:checked+span::after{transform:translateX(20px)}.tg input:focus-visible+span{outline:2px solid var(--red);outline-offset:2px}
+.p{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.p.dv,.p.gn{background:var(--gs);color:var(--gn)}.p.pe{background:var(--bs);color:var(--bl)}.p.pv{background:var(--as);color:var(--am)}.p.ne,.p.rd{background:var(--rs);color:var(--red)}.p.gy{background:var(--gys);color:var(--mut)}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0}.row.dim{opacity:.6}
+.ba{width:42px;height:42px;border-radius:50%;background:var(--rs);color:var(--red);display:grid;place-items:center;font-weight:800;flex:none;font-size:13px}
+.er{color:var(--red);font-size:13px;margin-top:6px;font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.acct{font-size:13px;font-weight:700;color:var(--red);padding:6px 10px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}.acct.in{background:var(--gs);color:var(--gn);border-color:transparent}.acct span{display:none}
+.okm{color:var(--gn);font-weight:600;font-size:14px;margin:10px 0 0}
+@media(min-width:520px){.acct span{display:inline}}
+@media(max-width:420px){.br{font-size:15px}.demo{font-size:11px;padding:4px 8px}header{gap:8px}}
+.hero{text-align:center;padding-top:28px}.hero h1{font-size:38px}.hc{display:grid;gap:14px;margin:26px 0 22px;text-align:left}
+.big{display:block;padding:22px}.big .em{font-size:34px}.big:hover{border-color:var(--red)}.lk{color:var(--red);font-weight:700;text-decoration:underline}
+@media(min-width:700px){.hc{grid-template-columns:1fr 1fr}}
+.empty{text-align:center;padding:50px 10px}.empty .em{font-size:42px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.sc{margin:0}.sc b{font-size:28px;display:block;line-height:1.2}
+.cols{display:grid;gap:14px;align-items:start}@media(min-width:900px){.cols{grid-template-columns:1.25fr 1fr}}
+.map{width:100%;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:14px;margin-top:10px}
+.ring{fill:none;stroke:var(--line);stroke-dasharray:4 4}.rl{font-size:10px;fill:var(--mut)}
+.s-a{--c:var(--gn)}.s-u{--c:var(--gy)}.s-r{--c:var(--red)}.dot{fill:var(--c);stroke:var(--card);stroke-width:2}
+.hm{fill:var(--red)}.ho2{fill:var(--gy)}.hp{fill:#fff;font-size:18px;font-weight:800}.hl{font-size:10px;fill:var(--ink);font-weight:700;paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+.lgd{display:flex;gap:14px;margin-top:12px;font-size:13px;color:var(--mut)}.lgd i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;background:var(--c)}
+.sm{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.note{margin:22px 0 0;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;color:var(--mut);font-size:12.5px}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;max-width:90vw}#toast.on{opacity:1}
+@media(min-width:760px){#toast{bottom:24px}}
+</style></head><body>
+<header id="hd"></header><main id="app"></main><nav id="bn" aria-label="Primary"></nav><div id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4/dist/umd/supabase.js" crossorigin="anonymous"></script>
+<script>
+const $=s=>document.querySelector(s),app=$('#app'),hd=$('#hd'),bn=$('#bn'),tt=$('#toast');
+const BG=['O-','O+','A-','A+','B-','B+','AB-','AB+'];
+const H=[{id:'gc',name:'General Clinic',area:'Central District',x:0,y:0},{id:'cc',name:'City Care Hospital',area:'North Avenue',x:4.5,y:0},{id:'lm',name:'Lakeside Medical Centre',area:'Lakeview',x:2,y:7.5}];
+const REC={'O-':['O-'],'O+':['O-','O+'],'A-':['O-','A-'],'A+':['O-','O+','A-','A+'],'B-':['O-','B-'],'B+':['O-','O+','B-','B+'],'AB-':['O-','A-','B-','AB-'],'AB+':BG};
+// name, group, age, kg, days since donation, screening(p/n/f), verified, available, km from General Clinic, angle
+const D0=[['Aarav Mehta','O-',28,68,211,'p',1,1,1.2,29],['Sara Lindqvist','O-',31,62,140,'p',0,1,2.4,200],['Rohan Iyer','O-',26,74,120,'p',0,1,4.1,80],['Meera Kapoor','O-',34,58,300,'p',1,1,5.3,310],['Daniel Okafor','O-',39,82,180,'p',1,1,6.2,150],['Priya Nair','O-',29,55,95,'p',0,1,3.3,250],['Lucas Moreau','O-',42,79,260,'p',1,1,7.4,20],['Ananya Rao','O-',24,52,130,'p',0,1,8.1,120],['Kabir Singh','O-',36,88,400,'p',1,1,9,340],['Elena Rossi','O-',33,60,200,'n',0,0,5.9,60],['Vikram Das','O-',45,77,150,'n',0,0,10.2,230],['Fatima Khan','O-',27,57,110,'p',0,1,6.8,175],['Ishaan Verma','O+',30,70,45,'p',0,0,1.8,300],['Grace Chen','O+',38,59,220,'n',0,0,7.7,100],['Arjun Pillai','O+',25,48,200,'p',0,0,4.8,40],['Nisha Patel','A+',71,63,300,'p',0,0,2.2,120],['Tomás García','A+',35,80,170,'p',0,0,5,270],['Zara Ahmed','A-',29,61,190,'p',0,1,6.5,210],['Rahul Joshi','A-',41,85,250,'f',0,0,8.8,330],['Leah Cohen','B+',32,66,30,'p',0,0,11,90],['Aditya Kulkarni','B+',27,72,160,'p',0,0,3.9,160],['Sofia Novak','B-',67,64,240,'p',0,0,1.5,15],['Manav Shah','B-',37,78,210,'f',0,0,9.6,280],['Hannah Weber','AB+',30,58,175,'p',0,0,7.1,50],['Kiran Reddy','AB+',44,83,190,'n',0,0,12,200],['Omar Haddad','AB-',40,76,205,'p',0,0,5.6,330],['Tara Bose','AB-',28,45,150,'p',0,0,8.3,140],['Yuki Tanaka','A+',34,61,60,'p',0,0,.9,190],['Neha Gupta','O+',26,56,135,'p',0,0,6,100],['Samuel Mensah','B+',73,90,280,'p',0,0,10.5,20]];
+const DAY=864e5,today=()=>Math.floor(Date.now()/DAY),iso=n=>new Date(n*DAY).toISOString().slice(0,10);
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const km=v=>+v.toFixed(1)+' km',hn=id=>H.find(h=>h.id===id);
+const pos=d=>({x:d.r*Math.cos(d.a*Math.PI/180),y:d.r*Math.sin(d.a*Math.PI/180)});
+const dist=(d,h)=>{const p=pos(d);return Math.hypot(p.x-h.x,p.y-h.y)};
+const mk=()=>D0.map((s,i)=>{const d={id:i,name:s[0],bg:s[1],age:s[2],wt:s[3],last:iso(today()-s[4]),scr:s[5],ver:!!s[6],av:!!s[7],al:true,r:s[8],a:s[9]};d.loc=H.reduce((a,b)=>dist(d,a)<=dist(d,b)?a:b).area;return d});
+const fresh=()=>({donors:mk(),reqs:[],cur:null,viewer:0,hv:{gc:1,cc:1,lm:0},n:1});
+let S;try{S=JSON.parse(localStorage.getItem('bdf-demo'))}catch(e){}
+if(!S||!S.donors||S.donors.length!==30)S=fresh();
+const save=()=>{try{localStorage.setItem('bdf-demo',JSON.stringify(S))}catch(e){}};
+const days=d=>{const t=Date.parse(d.last);return isNaN(t)?9999:today()-Math.floor(t/DAY)};
+const chk=d=>({age:d.age>=18&&d.age<=65,wt:d.wt>=50,gap:days(d)>=90});
+const st=d=>{const c=chk(d);if(!c.age||!c.wt||!c.gap||d.scr==='f')return'ne';if(d.scr==='n')return'pv';return d.ver?'dv':'pe'};
+const SL={dv:'Demo Verified (Sample Data)',pe:'Provisionally Eligible',pv:'Pending Verification',ne:'Not Eligible'};
+const pill=(c,t)=>`<span class="p ${c}">${t}</span>`;
+const cur=()=>S.reqs.find(r=>r.id===S.cur);
+const canAlert=(d,r)=>d.av&&d.al&&st(d)!=='ne'&&REC[r.bg].includes(d.bg);
+const tier={dv:0,pe:1,pv:2};
+const match=r=>{const h=hn(r.hid);return S.donors.filter(d=>REC[r.bg].includes(d.bg)&&st(d)!=='ne').sort((a,b)=>(b.av-a.av)||(tier[st(a)]-tier[st(b)])||((b.bg===r.bg)-(a.bg===r.bg))||(dist(a,h)-dist(b,h)))};
+let rq={pid:'',bg:'O-',units:2,hid:'gc',sos:true,err:''},dd,dh='gc',tm;
+const loadDD=()=>{dd={...S.donors[S.viewer]}};loadDD();
+const toast=m=>{tt.textContent=m;tt.classList.add('on');clearTimeout(tm);tm=setTimeout(()=>tt.classList.remove('on'),2400)};
+const N=[['request','🩸','Request'],['matches','📋','Matches'],['donor','👤','Donor'],['alert','🔔','Alerts'],['dashboard','🗺️','Dashboard']];
+const T={home:'Blood Donor Finder — Find compatible donors fast',request:'New Blood Request — Blood Donor Finder',matches:'Matched Donors — Blood Donor Finder',donor:'Donor Profile — Blood Donor Finder',alert:'Donor Alert — Blood Donor Finder',dashboard:'Map & Admin Dashboard — Blood Donor Finder',account:'Account — Blood Donor Finder'};
+const V={};
+V.home=()=>`<section class="hero"><div class="k">Emergency blood matching</div><h1>Blood Donor Finder</h1><p class="sub">Finding the right donor, near the hospital, in minutes.</p>
+<div class="hc"><a class="card big" href="#request"><div class="em">🩸</div><h2>Request Blood</h2><p class="mu">Create an emergency request and alert compatible donors nearby.</p><b class="rd">Continue as Requester →</b></a>
+<a class="card big" href="#donor"><div class="em">🤝</div><h2>Donate Blood</h2><p class="mu">Manage your donor profile, availability and incoming alerts.</p><b class="rd">Continue as Donor →</b></a></div>
+<a class="lk" href="#dashboard">Open map &amp; admin dashboard</a></section>`;
+V.request=()=>`<div class="k">Requester</div><h1>New blood request</h1><p class="sub">We’ll rank compatible, nearby and eligible donors instantly.</p>
+<div class="card"><label class="f" for="pid">Patient / request ID</label><input id="pid" type="text" data-s="rq" data-f="pid" value="${E(rq.pid)}" placeholder="e.g. REQ-1042" autocomplete="off">${rq.err?`<div class="er">${rq.err}</div>`:''}
+<label class="f">Blood group</label><div class="g4">${BG.map(b=>`<button class="ch${rq.bg===b?' on':''}" data-a="rbg" data-v="${b}">${b}</button>`).join('')}</div>
+<label class="f">Units required</label><div class="st"><button data-a="less" aria-label="Fewer units">−</button><b>${rq.units}</b><button data-a="more" aria-label="More units">+</button></div>
+<label class="f" for="hid">Hospital</label><select id="hid" data-s="rq" data-f="hid">${H.map(h=>`<option value="${h.id}"${rq.hid===h.id?' selected':''}>${h.name} — ${h.area}</option>`).join('')}</select>
+<div class="sos">${pill('rd','SOS')}<div class="gr"><b>Emergency / SOS</b><div class="mu">${rq.sos?'Priority alerts enabled for this request':'Standard request — donors are alerted manually'}</div></div><label class="tg"><input type="checkbox" data-s="rq" data-f="sos"${rq.sos?' checked':''} aria-label="Emergency SOS"><span></span></label></div>
+<button class="btn w" data-a="submit">Submit Request</button></div>`;
+const rowBtn=(d,r)=>r.ok.includes(d.id)?pill('gn','Accepted'):r.no.includes(d.id)?pill('gy','Declined'):r.al.includes(d.id)?pill('rd','Alerted'):!d.av?pill('gy','Unavailable'):!d.al?pill('gy','Alerts off'):`<button class="btn s" data-a="alert1" data-id="${d.id}">Alert</button>`;
+V.matches=()=>{const r=cur();if(!r)return`<div class="empty"><h1>No active request</h1><p class="sub">Create a blood request to see matched donors.</p><a class="btn" href="#request">Create request</a></div>`;
+const h=hn(r.hid),ms=match(r);
+return`<div class="k">Requester</div><h1>Matched donors</h1><p class="sub">Ranked by availability, eligibility and distance.</p>
+<div class="card"><div class="row"><div class="ba">${r.bg}</div><div class="gr"><b>${E(r.pid)}</b> ${r.sos?pill('rd','SOS'):''}<div class="mu">${r.units} unit${r.units>1?'s':''} · ${h.name} · ${r.ok.length}/${r.units} confirmed</div></div>${pill(r.status==='open'?'gn':'gy',r.status==='open'?'Open':'Matched')}</div>
+<div class="btns"><button class="btn s" data-a="alertall">Alert all available</button><button class="btn s o" data-a="done">Mark fulfilled</button></div></div>
+<div class="card">${ms.length?ms.map(d=>`<div class="row${d.av?'':' dim'}"><div class="ba">${d.bg}</div><div class="gr"><b>${E(d.name)}</b><div class="mu">${km(dist(d,h))} away · ${d.bg===r.bg?'Exact match':'Compatible'}</div>${pill(st(d),SL[st(d)])}</div>${rowBtn(d,r)}</div>`).join(''):'<p class="mu">No compatible eligible donors found.</p>'}</div>`};
+const eligHTML=d=>{const s=st(d);return`<div class="row" style="flex-wrap:wrap"><b class="gr" style="flex-basis:200px">Preliminary eligibility (private to you)</b>${pill(s,SL[s])}</div><p class="mu">Checks: age 18–65, weight ≥ 50 kg, 90+ days since last donation, health screening. This is not a medical decision — final approval is made by qualified blood-bank staff. Height/BMI are not used.</p>`};
+const gapText=d=>d.last&&!isNaN(Date.parse(d.last))?`${days(d)} days since last donation (as of today, UTC)`:'No previous donation recorded';
+const demoDonor=()=>{const sc=[['n','Not started'],['p','Passed'],['f','Failed']];return`<div class="k">Donor</div><h1>Your donor profile</h1><p class="sub">Keep your availability updated so we can reach you in an emergency.</p>
+<div class="card"><label class="f" for="vw">Demo: view as</label><select id="vw" data-a="view">${S.donors.map(d=>`<option value="${d.id}"${d.id===S.viewer?' selected':''}>${E(d.name)} (${d.bg})</option>`).join('')}</select></div>
+<div class="card"><label class="f" for="nm">Donor name</label><input id="nm" type="text" data-f="name" value="${E(dd.name)}" autocomplete="off">
+<label class="f">Blood group</label><div class="g4">${BG.map(b=>`<button class="ch${dd.bg===b?' on':''}" data-a="dbg" data-v="${b}">${b}</button>`).join('')}</div>
+<label class="f" for="lc">Location</label><input id="lc" type="text" data-f="loc" value="${E(dd.loc)}" autocomplete="off">
+<div class="two"><div><label class="f" for="ag">Age (years)</label><input id="ag" type="number" min="0" max="120" data-f="age" value="${dd.age}"></div><div><label class="f" for="wt">Weight (kg)</label><input id="wt" type="number" min="0" max="300" data-f="wt" value="${dd.wt}"></div></div>
+<label class="f">General health screening (demo)</label><div class="seg">${sc.map(([v,l])=>`<button class="ch${dd.scr===v?' on':''}" data-a="scr" data-v="${v}">${l}</button>`).join('')}</div>
+<label class="f">Blood-bank verification</label>${dd.ver?pill('dv','Demo Verified (Sample Data)'):pill('gy','Not yet verified')}
+<label class="f" for="ld">Last donation date</label><input id="ld" type="date" data-f="last" value="${E(dd.last)}"><div class="mu" id="gap" style="margin-top:6px">${gapText(dd)}</div>
+<div class="sw"><b class="gr">Available to donate</b><label class="tg"><input type="checkbox" data-f="av"${dd.av?' checked':''} aria-label="Available to donate"><span></span></label></div>
+<div class="sw"><b class="gr">You’ll receive emergency alerts</b><label class="tg"><input type="checkbox" data-f="al"${dd.al?' checked':''} aria-label="Receive emergency alerts"><span></span></label></div>
+<button class="btn w" data-a="save">Save Profile</button></div>
+<div class="card" id="elig">${eligHTML(dd)}</div>
+<div class="card"><h2>Distance from nearby hospitals</h2>${H.map(h=>`<div class="row"><span class="gr">${h.name}</span><b>${km(dist(S.donors[S.viewer],h))}</b></div>`).join('')}</div>`};
+V.alert=()=>{const v=S.donors[S.viewer],as=S.reqs.filter(r=>r.status==='open'&&r.al.includes(v.id)&&!r.ok.includes(v.id)&&!r.no.includes(v.id));
+return`<div class="mu">Donor view · ${E(v.name)}</div>`+(as.length?`<h1>Emergency requests</h1><p class="sub">Compatible patients need your help.</p>`+as.map(r=>{const h=hn(r.hid);return`<div class="card"><div class="row">${pill('rd',r.sos?'SOS':'Request')}<b class="gr">${r.bg} blood needed</b><span class="mu">${r.units} unit${r.units>1?'s':''}</span></div><p class="mu">${h.name} · ${km(dist(v,h))} from you · Ref ${E(r.pid)}</p><div class="btns"><button class="btn" data-a="acc" data-id="${r.id}">I can donate</button><button class="btn o" data-a="no" data-id="${r.id}">Can’t make it</button></div></div>`}).join('')
+:`<div class="empty"><div class="em">🔕</div><h1>No alerts right now</h1><p class="sub">You’ll be notified here when a compatible emergency request needs you.</p><a class="btn" href="#matches">Back to requester view</a></div>`)};
+const mapSVG=(h,al)=>{const k=11,X=200,Y=185;let s=`<svg class="map" viewBox="0 0 400 370" role="img" aria-label="Map of donors around ${h.name}">`;
+[5,10,15].forEach(n=>{s+=`<circle class="ring" cx="${X}" cy="${Y}" r="${n*k}"/><text class="rl" x="${X+n*k*.72}" y="${Y-n*k*.72-3}">${n} km</text>`});
+S.donors.forEach(d=>{const p=pos(d),c=al.has(d.id)?'s-r':d.av?'s-a':'s-u';s+=`<circle class="dot ${c}" cx="${(X+(p.x-h.x)*k).toFixed(1)}" cy="${(Y+(p.y-h.y)*k).toFixed(1)}" r="6"><title>${E(d.name)} · ${d.bg}</title></circle>`});
+H.forEach(o=>{const x=X+(o.x-h.x)*k,y=Y+(o.y-h.y)*k,sel=o.id===h.id,right=x>=X;s+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><rect x="-11" y="-11" width="22" height="22" rx="6" class="${sel?'hm':'ho2'}"/><text y="6" text-anchor="middle" class="hp">+</text><text x="${sel?0:right?-11:11}" y="${sel?26:-16}" text-anchor="${sel?'middle':right?'start':'end'}" class="hl">${o.name}</text></g>`});
+return s+'</svg>'};
+V.dashboard=()=>{const h=hn(dh),op=S.reqs.filter(r=>r.status==='open'),cnt=k=>S.donors.filter(d=>st(d)===k).length,
+al=new Set(op.flatMap(r=>r.al.filter(i=>!r.ok.includes(i)&&!r.no.includes(i)))),hr=op.find(r=>r.hid===dh),
+near=[...S.donors].sort((a,b)=>dist(a,h)-dist(b,h)).slice(0,6),q=S.donors.filter(d=>st(d)==='pe');
+return`<div class="k">Admin</div><h1>Map &amp; dashboard</h1><p class="sub">Simulated live view of donors around each hospital.</p>
+<div class="stats">${[['Active Requests',op.length],['Available Donors',S.donors.filter(d=>d.av).length],['Emergency Requests',op.filter(r=>r.sos).length],['Successful Matches',S.reqs.filter(r=>r.status==='matched').length]].map(([l,n])=>`<div class="card sc"><div class="mu">${l}</div><b>${n}</b></div>`).join('')}</div>
+<div class="cols" style="margin-top:14px"><div>
+<div class="card"><div class="seg">${H.map(x=>`<button class="ch${x.id===dh?' on':''}" data-a="dh" data-id="${x.id}">${x.name}</button>`).join('')}</div>
+<div class="lgd"><span class="s-a"><i></i>Available</span><span class="s-u"><i></i>Unavailable</span><span class="s-r"><i></i>Alerted</span></div>${mapSVG(h,al)}
+<p class="mu" style="margin:10px 0 0"><b>${h.name}</b> — ${hr?`${hr.bg} needed · ${hr.units} unit${hr.units>1?'s':''}${hr.sos?' · SOS':''} · ${E(hr.pid)}`:'No active request at this hospital'}</p></div>
+<div class="card"><h2>Nearest donors</h2>${near.map(d=>`<div class="row"><span class="gr">${E(d.name)} (${d.bg})</span><b>${km(dist(d,h))}</b></div>`).join('')}</div></div>
+<div><div class="card"><h2>Blood-bank verification queue</h2><p class="mu">Simulated staff panel. Only qualified blood-bank staff make final eligibility decisions; medical details are not shown here.</p>
+${q.length?q.map(d=>`<div class="row"><span class="gr"><b>${E(d.name)}</b> ${d.bg}</span><button class="btn s o" data-a="ver" data-id="${d.id}">Mark demo verified</button></div>`).join(''):'<p class="mu">Queue is empty.</p>'}
+<div class="sm">${['dv','pe','pv','ne'].map(k=>pill(k,`${k==='pe'?'Provisionally Eligible':SL[k]}: ${cnt(k)}`)).join('')}</div></div>
+<div class="card"><h2>Hospital verification</h2>${H.map(x=>`<div class="row"><span class="gr">${x.name}</span><button class="p ${S.hv[x.id]?'dv':'pv'}" style="border:0;cursor:pointer" data-a="hv" data-id="${x.id}">${S.hv[x.id]?'Demo verified':'Pending (demo)'}</button></div>`).join('')}</div>
+<div class="card"><h2>Requests</h2>${S.reqs.length?S.reqs.map(r=>`<div class="row"><div class="ba">${r.bg}</div><div class="gr"><b>${E(r.pid)}</b><div class="mu">${r.units} unit${r.units>1?'s':''} · ${hn(r.hid).name}</div></div>${r.sos?pill('rd','SOS'):''}${pill(r.status==='open'?'gn':'gy',r.status==='open'?'Open':'Matched')}</div>`).join(''):'<p class="mu">No requests yet. <a class="lk" href="#request">Create one →</a></p>'}</div>
+<button class="btn o" data-a="reset">Reset demo data</button></div></div>`};
+const NOTE='<p class="note"><b>Demo mode.</b> Donors, hospitals, requests, matching, alerts and the dashboard are simulated sample data kept only in this browser (reset from the dashboard). Only account sign-in and your own donor profile use Supabase; no messages, notifications or GPS are involved.</p>';
+function render(){const r=location.hash.slice(1),v=Object.hasOwn(V,r)?r:'home',cp=k=>k===v?' class="on" aria-current="page"':'';
+hd.innerHTML=`<a class="br" href="#home"><span class="lg">🩸</span>Blood Donor Finder</a>${v==='home'?'':`<nav class="tn" aria-label="Main">${N.map(([k,,l])=>`<a href="#${k}"${cp(k)}>${l}</a>`).join('')}</nav>`}<span class="demo">● Demo Mode</span>${acctLink()}`;
+bn.innerHTML=v==='home'?'':N.map(([k,i,l])=>`<a href="#${k}"${cp(k)}><span>${i}</span>${l}</a>`).join('');
+app.className=v==='dashboard'?'wide':'';app.innerHTML=V[v]()+NOTE;document.title=T[v]}
+const A={
+rbg:d=>{rq.bg=d.v;render()},less:()=>{rq.units=Math.max(1,rq.units-1);render()},more:()=>{rq.units=Math.min(10,rq.units+1);render()},
+submit:()=>{if(!rq.pid.trim()){rq.err='Enter a patient or request ID.';render();$('#pid').focus();return}
+const r={id:S.n++,pid:rq.pid.trim(),bg:rq.bg,units:rq.units,hid:rq.hid,sos:rq.sos,status:'open',al:[],ok:[],no:[]};
+if(r.sos)S.donors.forEach(d=>{if(canAlert(d,r))r.al.push(d.id)});
+S.reqs.unshift(r);S.cur=r.id;save();rq={pid:'',bg:'O-',units:2,hid:'gc',sos:true,err:''};
+toast(r.sos?`Demo: ${r.al.length} donor${r.al.length===1?'':'s'} marked as alerted`:'Request created');location.hash='matches'},
+alert1:d=>{cur().al.push(+d.id);save();render();toast('Demo alert recorded')},
+alertall:()=>{const r=cur();let n=0;S.donors.forEach(d=>{if(canAlert(d,r)&&!r.al.includes(d.id)){r.al.push(d.id);n++}});save();render();toast(n?`Demo: ${n} donor${n===1?'':'s'} marked as alerted`:'No more donors to alert')},
+done:()=>{cur().status='matched';save();render();toast('Request marked fulfilled')},
+dbg:d=>{dd.bg=d.v;render()},scr:d=>{dd.scr=d.v;render()},
+save:()=>{if(!dd.name.trim()){toast('Enter your name');return}
+Object.assign(S.donors[S.viewer],{name:dd.name.trim(),bg:dd.bg,loc:dd.loc,age:dd.age,wt:dd.wt,scr:dd.scr,last:dd.last,av:dd.av,al:dd.al});save();loadDD();render();toast('Demo profile saved (this browser only)')},
+acc:d=>{const r=S.reqs.find(x=>x.id===+d.id);r.ok.push(S.viewer);if(r.ok.length>=r.units)r.status='matched';save();render();toast('Accepted — recorded in this demo')},
+no:d=>{S.reqs.find(x=>x.id===+d.id).no.push(S.viewer);save();render()},
+dh:d=>{dh=d.id;render()},ver:d=>{S.donors[+d.id].ver=true;save();render();toast('Marked demo verified')},
+hv:d=>{S.hv[d.id]=S.hv[d.id]?0:1;save();render()},
+reset:()=>{S=fresh();rq={pid:'',bg:'O-',units:2,hid:'gc',sos:true,err:''};loadDD();save();render();toast('Demo data reset')}};
+// ================= Supabase: authentication + the user's OWN donor profile =================
+// Only the publishable key is used here. It is safe in browsers because Row Level Security on
+// public.profiles (not secrecy of the key) protects the data. Never put a service-role key in this file.
+const SUPABASE_URL='https://ebhslafpubaazgveazhm.supabase.co',SUPABASE_KEY='sb_publishable_0z2wSTr11el8-SE9j8TEAg_3J9dVEa1';
+const PCOLS='id,full_name,blood_group,age,weight_kg,city'; // the 6 known columns only - never select('*')
+const bootHash=location.hash; // read before supabase-js consumes auth tokens/errors from the URL
+let sb=null;
+try{if(window.supabase&&window.supabase.createClient)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
+catch(e){console.warn('Supabase client could not be created; running in demo mode only.')}
+const auth={user:null,ready:!sb,mode:'login',email:'',pw:'',pw2:'',busy:false,msg:'',kind:''};
+const blankDraft={full_name:'',blood_group:'',city:'',age:'',weight_kg:''};
+const prof={loading:false,saving:false,loaded:false,row:null,draft:{...blankDraft},msg:'',kind:''};
+let dmode=null; // which donor tab is open once logged in: 'cloud' | 'demo'
+const say=(o,m,k)=>{o.msg=m;o.kind=k};
+const msgBox=o=>o.msg?`<div class="${o.kind==='ok'?'okm':'er'}" role="${o.kind==='ok'?'status':'alert'}">${E(o.msg)}</div>`:'';
+const friendly=e=>{const m=(e&&e.message)||'Something went wrong.',c=e&&e.code;
+ if(/fetch|network|load failed|timed? ?out/i.test(m))return'Network problem — check your connection and try again.';
+ if(/invalid login/i.test(m))return'Incorrect email or password.';
+ if(/not confirmed/i.test(m))return'Please confirm your email first — check your inbox for the confirmation link.';
+ if(/already registered/i.test(m))return'An account with this email already exists. Try logging in.';
+ if(/rate limit|too many/i.test(m)||(e&&e.status===429))return'Too many attempts. Please wait a few minutes and try again.';
+ if(c==='42501'||/row-level security/i.test(m))return'The database refused this change (row-level security). Make sure you are logged in.';
+ if(c==='PGRST116')return'Your profile could not be updated (no matching row, or permission denied).';
+ return m};
+const toDraft=r=>({full_name:(r&&r.full_name)||'',blood_group:(r&&r.blood_group)||'',city:(r&&r.city)||'',age:r&&r.age!=null?String(r.age):'',weight_kg:r&&r.weight_kg!=null?String(r.weight_kg):''});
+const same=uid=>auth.user&&auth.user.id===uid; // ignore async results that arrive after logout / user switch
+
+async function loadProfile(){const uid=auth.user.id;prof.loading=true;prof.loaded=false;say(prof,'','');render();
+ try{const{data,error}=await sb.from('profiles').select(PCOLS).eq('id',uid).maybeSingle();
+  if(!same(uid))return;if(error)throw error;
+  prof.row=data;prof.draft=toDraft(data);prof.loaded=true}
+ catch(e){if(same(uid))say(prof,'Could not load your profile: '+friendly(e),'er')}
+ finally{if(same(uid)){prof.loading=false;render()}}}
+
+const validateProfile=d=>{const e=[],age=Number(d.age),wt=Number(d.weight_kg),n=d.full_name.trim().length,c=d.city.trim().length;
+ if(n<2||n>100)e.push('Enter your full name (2–100 characters).');
+ if(!BG.includes(d.blood_group))e.push('Choose your blood group.');
+ if(c<2||c>100)e.push('Enter your city (2–100 characters).');
+ if(d.age===''||!Number.isInteger(age)||age<18||age>120)e.push('Age must be a whole number from 18 to 120.');
+ if(d.weight_kg===''||!isFinite(wt)||wt<30||wt>300)e.push('Weight must be between 30 and 300 kg.');
+ return e};
+
+async function saveProfile(){if(prof.saving||!auth.user||!sb)return;const d=prof.draft,errs=validateProfile(d);
+ if(errs.length){say(prof,errs.join(' '),'er');render();return}
+ const uid=auth.user.id,vals={full_name:d.full_name.trim(),blood_group:d.blood_group,city:d.city.trim(),age:Number(d.age),weight_kg:Number(d.weight_kg)};
+ prof.saving=true;say(prof,'','');render();
+ try{ // the row id is ALWAYS the logged-in user's UUID, never taken from the form
+  let r=await(prof.row?sb.from('profiles').update(vals).eq('id',uid):sb.from('profiles').insert({id:uid,...vals})).select(PCOLS).single();
+  if(r.error&&r.error.code==='23505'&&!prof.row)r=await sb.from('profiles').update(vals).eq('id',uid).select(PCOLS).single(); // row appeared meanwhile (e.g. DB trigger)
+  if(!same(uid))return;if(r.error)throw r.error;
+  prof.row=r.data;prof.draft=toDraft(r.data);say(prof,'Profile saved to your account.','ok')}
+ catch(e){if(same(uid))say(prof,'Could not save your profile: '+friendly(e),'er')}
+ finally{prof.saving=false;if(same(uid))render()}}
+
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const fail=m=>{say(auth,m,'er');render()};
+async function doAuth(){if(auth.busy||!sb)return;const reg=auth.mode==='register',email=auth.email.trim().toLowerCase(),pw=auth.pw;
+ if(!EMAIL_RE.test(email))return fail('Enter a valid email address.');
+ if(pw.length<8)return fail('Password must be at least 8 characters.');
+ if(reg&&pw!==auth.pw2)return fail('Passwords do not match.');
+ auth.busy=true;say(auth,'','');render();
+ try{
+  if(reg){const redirect=/^https?:$/.test(location.protocol)?location.origin+location.pathname:undefined;
+   const{data,error}=await sb.auth.signUp({email,password:pw,options:redirect?{emailRedirectTo:redirect}:undefined});
+   if(error)throw error;
+   if(data.session)say(auth,'Account created — you are logged in.','ok'); // e-mail confirmation is switched off in the project
+   else if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0)say(auth,'An account with this email may already exist. Try logging in, or check your inbox if you have not confirmed it yet.','er');
+   else say(auth,'Almost done — open the confirmation link we emailed you, then log in here.','ok');
+  }else{const{error}=await sb.auth.signInWithPassword({email,password:pw});if(error)throw error;say(auth,'Logged in.','ok')}
+ }catch(e){say(auth,friendly(e),'er')}
+ finally{auth.pw=auth.pw2='';auth.busy=false;render()}}
+async function doLogout(){if(auth.busy||!sb)return;auth.busy=true;render();
+ try{const{error}=await sb.auth.signOut({scope:'local'});if(error)throw error;say(auth,'You have been logged out.','ok')}
+ catch(e){say(auth,'Could not log out: '+friendly(e),'er')}
+ finally{auth.busy=false;render()}}
+
+function onAuth(event,session){ // runs for INITIAL_SESSION, SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED, USER_UPDATED. No awaited Supabase calls in here.
+ const u=session?session.user:null,prev=auth.user;
+ if(event==='TOKEN_REFRESHED')return;
+ if(event==='SIGNED_IN'&&prev&&u&&prev.id===u.id){auth.user=u;return} // fires again on tab refocus - don't reset the form
+ auth.user=u;auth.ready=true;
+ if(!u){prof.row=null;prof.draft={...blankDraft};prof.loaded=prof.loading=prof.saving=false;say(prof,'','');dmode=null} // drop profile data from memory on logout
+ render();
+ if(u&&(!prev||prev.id!==u.id))setTimeout(loadProfile,0)}
+
+const acctLink=()=>`<a class="acct${auth.user?' in':''}" href="#account" aria-label="${auth.user?'Account (logged in)':'Log in'}">👤<span> ${auth.user?'Account':'Log in'}</span></a>`;
+const unavailable='<div class="card"><p>Cloud sign-in is unavailable because the Supabase library could not be loaded (offline, blocked, or a CDN problem). The app is running in demo mode only.</p></div>';
+V.account=()=>{const h='<div class="k">Account</div>';
+ if(!sb)return h+'<h1>Account</h1>'+unavailable;
+ if(!auth.ready)return h+'<h1>Account</h1><p class="sub">Checking your session…</p>';
+ if(auth.user)return`${h}<h1>You’re logged in</h1><p class="sub">Signed in as <b>${E(auth.user.email||'')}</b></p><div class="card">${msgBox(auth)}<p class="mu">Your account and your own donor profile are stored in Supabase. Requests, matching, alerts and the dashboard are still demo-only sample data.</p><div class="btns"><a class="btn" href="#donor">Open my donor profile</a><button class="btn o" data-a="logout"${auth.busy?' disabled':''}>${auth.busy?'Logging out…':'Log out'}</button></div></div>`;
+ const reg=auth.mode==='register';
+ return`${h}<h1>${reg?'Create your account':'Log in'}</h1><p class="sub">Sign in to save your own donor profile. Only you can read it.</p>
+<div class="card"><div class="seg"><button type="button" class="ch${reg?'':' on'}" data-a="mode" data-v="login">Log in</button><button type="button" class="ch${reg?' on':''}" data-a="mode" data-v="register">Create account</button></div>
+<form data-form="auth" novalidate style="margin-top:14px"><label class="f" for="em">Email</label><input id="em" type="email" inputmode="email" autocomplete="email" data-s="acc" data-f="email" value="${E(auth.email)}">
+<label class="f" for="pw">Password</label><input id="pw" type="password" autocomplete="${reg?'new-password':'current-password'}" data-s="acc" data-f="pw" value="${E(auth.pw)}">
+${reg?`<label class="f" for="pw2">Confirm password</label><input id="pw2" type="password" autocomplete="new-password" data-s="acc" data-f="pw2" value="${E(auth.pw2)}">`:''}
+${msgBox(auth)}<button class="btn w" type="submit"${auth.busy?' disabled':''}>${auth.busy?'Please wait…':reg?'Create account':'Log in'}</button></form></div>`};
+
+const cloudForm=()=>{const d=prof.draft,dis=prof.loading||prof.saving?' disabled':'';
+ return`<div class="k">Donor</div><h1>My donor profile</h1><p class="sub">Saved to your account in Supabase. Only you can read or change it.</p>
+<div class="card">${prof.loading?'<p class="mu">Loading your profile…</p>':prof.loaded&&!prof.row?'<p class="mu">No profile yet — fill this in and save to create it.</p>':''}
+<form data-form="profile" novalidate><label class="f" for="cn">Full name</label><input id="cn" type="text" autocomplete="name" maxlength="100" data-s="cp" data-f="full_name" value="${E(d.full_name)}"${dis}>
+<label class="f">Blood group</label><div class="g4">${BG.map(b=>`<button type="button" class="ch${d.blood_group===b?' on':''}" data-a="cbg" data-v="${b}"${dis}>${b}</button>`).join('')}</div>
+<label class="f" for="cc">City</label><input id="cc" type="text" autocomplete="address-level2" maxlength="100" data-s="cp" data-f="city" value="${E(d.city)}"${dis}>
+<div class="two"><div><label class="f" for="ca">Age (years)</label><input id="ca" type="number" min="18" max="120" step="1" data-s="cp" data-f="age" value="${E(d.age)}"${dis}></div><div><label class="f" for="cw">Weight (kg)</label><input id="cw" type="number" min="30" max="300" step="0.1" data-s="cp" data-f="weight_kg" value="${E(d.weight_kg)}"${dis}></div></div>
+${msgBox(prof)}<button class="btn w" type="submit"${dis}>${prof.saving?'Saving…':prof.row?'Update profile':'Save profile'}</button></form></div>
+<div class="card"><p class="mu"><b>Not stored in the cloud yet:</b> last donation date, health screening, availability and alert preferences — the existing table has no columns for them. Donor matching, requests, alerts and the dashboard remain demo-only.</p></div>`};
+V.donor=()=>{
+ if(!auth.user)return`<div class="card"><p class="mu" style="margin:0"><b>Sample data.</b> ${sb?'The donors below are demo records. <a class="lk" href="#account">Log in</a> to save a real profile to your account.':'Cloud sign-in is unavailable, so only demo records are shown.'}</p></div>`+demoDonor();
+ if(dmode===null)dmode='cloud';
+ return`<div class="card"><div class="seg"><button class="ch${dmode==='cloud'?' on':''}" data-a="dm" data-v="cloud">My profile</button><button class="ch${dmode==='demo'?' on':''}" data-a="dm" data-v="demo">Demo donors (sample data)</button></div></div>`+(dmode==='demo'?demoDonor():cloudForm())};
+
+Object.assign(A,{mode:d=>{auth.mode=d.v;say(auth,'','');render()},dm:d=>{dmode=d.v;render()},cbg:d=>{prof.draft.blood_group=d.v;say(prof,'','');render()},logout:doLogout});
+document.addEventListener('submit',e=>{const f=e.target.dataset&&e.target.dataset.form;if(!f)return;e.preventDefault();if(f==='auth')doAuth();else if(f==='profile')saveProfile()});
+if(sb){sb.auth.onAuthStateChange(onAuth);setTimeout(()=>{if(!auth.ready){auth.ready=true;render()}},5000)} // bound exactly once
+if(/error_description=/.test(bootHash)){const p=new URLSearchParams(bootHash.slice(1));say(auth,'Sign-in link problem: '+(p.get('error_description')||'the link is invalid or expired')+'. Log in again or request a new link.','er');history.replaceState(null,'',location.pathname+location.search+'#account')}
+// ================= end Supabase =================
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&t.tagName!=='SELECT'&&A[t.dataset.a])A[t.dataset.a](t.dataset)});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.a==='view'){S.viewer=+t.value;save();loadDD();render()}});
+document.addEventListener('input',e=>{const t=e.target,f=t.dataset.f;if(!f)return;
+const v=t.type==='checkbox'?t.checked:t.type==='number'?(t.value===''?0:+t.value):t.value;
+if(t.dataset.s==='acc'){auth[f]=v;return}if(t.dataset.s==='cp'){prof.draft[f]=v;return}if(t.dataset.s==='rq'){rq[f]=v;rq.err='';const er=$('.er');if(er)er.remove();if(f==='sos')render()}
+else{dd[f]=v;const el=$('#elig'),g=$('#gap');if(el)el.innerHTML=eligHTML(dd);if(g)g.textContent=gapText(dd)}});
+addEventListener('hashchange',()=>{render();scrollTo(0,0)});
+render();
+</script></body></html>
